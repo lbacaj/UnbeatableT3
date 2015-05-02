@@ -1,0 +1,152 @@
+﻿body {
+    padding:0;
+    margin:0;
+}
+h1 {
+    display: block;
+    background: #3498db;
+    width: 100%;
+    padding:0;
+    margin:0;
+}
+    h1 span {
+        text-align:center;
+        color:#fff;
+        padding:10px 0;
+        display:block;
+        font-variant:small-caps;
+    }
+input.findGame {
+    clear: both;
+}
+
+.radio-button{
+    padding:5px 0;
+}
+
+.radio-button label {
+    padding-left:10px;
+}
+
+.container {
+     max-width:960px;
+     display:block;
+     margin:0 auto;
+}
+
+#gameBoard, #register, #serverInformation {
+    max-width:960px;
+    display:block;
+    margin:0 auto;
+    text-align:center;
+}
+
+#register strong{
+    font-size:2em;
+    display:block;
+}
+
+#register input[type=button] {
+    margin:10px 0;
+}
+
+#findGame {
+    display:block;
+}
+
+#newGame {
+    display:block;
+    max-width:150px;
+    margin:0 auto;
+}
+
+#newGame form {
+    margin:15px 0;
+}
+
+#gameBoard, #newGame { 
+    margin-top:35px;
+}
+
+#game {
+    display:block;
+    margin:0 auto;
+}
+
+
+.clear {
+    clear: both;
+}
+span.box {
+    display: block;
+    border: 2px solid gray;
+    height: 80px;
+    width: 80px;
+    float: left;
+    margin: 10px;
+}
+div.information {
+    clear: both;
+}
+div#serverInformation {
+    clear: both;   
+    margin-top: 30px;
+    font-size: 80%;
+    font-style: italic;
+}
+span#gameInformation {
+    font-weight: bold;
+    font-size: 120%;
+}
+span.mark1 {
+    background: url('/Content/Images/LouieT3X.png') center center no-repeat;
+}
+
+span.mark2 {
+    background: url('/Content/Images/LouieT3O.png') center center no-repeat;
+}
+div#game {
+    width: 320px;
+}
+fieldset {
+    margin-top: 100px;
+    display: none;
+}
+.input { 
+   border:none; 
+   -webkit-border-radius:5px; 
+   -moz-border-radius:5px; 
+   border-radius:5px; 
+   -webkit-box-shadow:0 0 5px #666 inset; 
+   -moz-box-shadow:0 0 5px #666 inset; 
+   box-shadow:0 0 5px #666 inset; 
+   height:25px; 
+   line-height:25px; 
+   width:150px; 
+   text-indent:5px; 
+} 
+.input:focus { outline:none; }
+.button {
+border-radius: 5px 5px 5px 5px;
+-moz-border-radius: 5px 5px 5px 5px;
+-webkit-border-radius: 5px 5px 5px 5px;
+-o-border-radius: 5px 5px 5px 5px;
+transition: opacity 0.3s linear;
+-moz-transition: opacity 0.3s linear;
+-webkit-transition: opacity 0.3s linear;
+-o-transition: opacity 0.3s linear;
+color: #FFFFFF;
+font-family: 'OpenSansbold';
+font-size: 12px;
+letter-spacing: 2px!important;
+padding: 13px 18px;
+position: relative;
+text-transform: uppercase;
+top: -3px;
+margin-bottom: 10px;
+opacity: 1;
+line-height: 10px;
+background-color: #f6653c;
+display: inline-block;
+border:none;
+}

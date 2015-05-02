@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+
+<html class="no-js">
+<head>
+    <title>Tic Tac Toe</title>
+    <link href="Content/Site.css" rel="stylesheet" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+    <script src="/Scripts/jquery-2.1.1.min.js"></script>
+    <script src="/Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="/signalr/hubs" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var x = new Image();
+            x.src = '/Content/Images/LouieT3X.png';
+            var o = new Image();
+            o.src = '/Content/Images/LouieT3O.png';
+
+            $('#register').show();
+            $('#newGame').hide();
+            $('#waitingForOpponent').hide();
+            $('#game').hide();
+
+            var gameHub = $.connection.gameHub;
+
+            gameHub.client.waitingForOpponent = function (message) {
+                $('#information').html('');
+                $('#information').html('<strong>Waiting for the opponent to play!</strong>');
+                $('#debug').append('<li>You need to wait for the opponent to play!</li>');
+            };
+
+            gameHub.client.waitingForMarkerPlacement = function (message) {
+                $('#information').html('');
+                $('#information').html('<strong>Your turn!</strong>');
+                $('#debug').append('<li>Your turn! Make your move</li>');
+            };
+
+            gameHub.client.foundOpponent = function (message, symbol) {
+                $('#waitingForOpponent').hide();
+                $('#gameInformation').html('You are playing against: ' + message);
+                $('#symbol').html("You play with: <img src='" + symbol + "' height='20' width='20' style='vertical-align:bottom'/>");
+                $('#debug').append('<li>You are playing against ' + message + '</li>');
+
+                $('#game').html('<div id="information" /><br/>');
+                for (var i = 0; i < 9; i++) {
+
+                    $('#game').append("<span id=" + i + " class='box' />");
+                }
+
+                $('#game').show();
+            };
+
+            gameHub.client.noOpponents = function (message) {
+                $('#information').html("<strong>Looking for an opponent!</strong>");
+                $('#debug').append('<li>Waiting for an opponent to connect...</li>');
+            };
+
+            gameHub.client.addMarkerPlacement = function (message) {
+                if (message.Symbol == "O") {
+                    $("#" + message.MarkerPosition).addClass("mark2");
+                    $("#" + message.MarkerPosition).addClass("marked");
+                    $("#information").html("<strong>Waiting for the opponent to play!</strong>");
+                }
+                else {
+                    $("#" + message.MarkerPosition).addClass("mark1");
+                    $("#" + message.MarkerPosition).addClass("marked");
+                    $("#information").html("<strong>Waiting for the opponent to play!</strong>");
+                }
+                $('#debug').append('<li>Move made ​​by ' + message.OpponentName + ' in position ' + message.MarkerPosition + '</li>');
+            };
+
+            gameHub.client.opponentDisconnected = function (message) {
+                $("#gameInformation").html("<strong>Oh no! The opponent quit the game! " + message + " Good news is you win!</strong>");
+                $('#debug').append('<li>Opponent left!</li>');
+
+                $("#newGame").show();
+                $("#game").hide();
+            };
+
+            gameHub.client.registerComplete = function (message) {
+                $('#debug').append('<li>You ready for some fun tic tac toe action?</li>');
+            };
+
+            gameHub.client.gameOver = function (message) {
+                $("#information").html('<strong>End of game! The winner is: ' + message + '</strong>');
+                $('#debug').append('<li>End of game! The winner is: ' + message + '</li>');
+                $("#newGame").show();
+            };
+
+            gameHub.client.refreshAmountOfPlayers = function (message) {
+                $("#amountOfGames").html(message.amountOfGames);
+                $("#amountOfClients").html(message.amountOfClients);
+                $("#totalAmountOfGames").html(message.totalGamesPlayed);
+            };
+
+            $("#game").on("click", ".box", function (event) {
+                if ($(this).hasClass("marked")) return;
+
+                gameHub.server.humanPlaceMarker(event.target.id);
+            });
+
+            $("#registerName").click(function () {
+                gameHub.server.registerClient($('#gamaName').val());
+
+                $("#register").hide();
+                $("#newGame").show();
+            });
+
+            $(".findGame").click(function () {
+                findGame();
+            });
+
+            function findGame() {
+                gameHub.server.newGame($('input:radio[name=gameMode]:checked').val());
+                $("#waitingForOpponent").show();
+                $("#register").hide();
+                $("#newGame").hide();
+            }
+
+            $.connection.hub.start().done();
+        });
+    </script>
+    <h1><span>Tic Tac Toe</span></h1>
+    <div class="container">
+        <div id="newGame">
+            <em>Game Mode</em><br />
+            <form>
+                <div class="radio-button">
+                    <input type="radio" name="gameMode" value="0" checked id="humanvhuman"><label for="humanvhuman">Human vs Human</label>
+                </div>
+                <div class="radio-button">
+                    <input type="radio" name="gameMode" value="1" id="humanvai"><label for="humanvai">human vs ai</label>
+                </div>
+                <div class="radio-button">
+                    <input type="radio" name="gameMode" value="2" id="aivhuman"><label for="aivhuman">ai vs human</label>
+                </div>
+
+            </form>
+            <input type="button" class="button findGame" id="findGame" value="New Game" />
+        </div>
+    </div>
+    <div id="gameBoard">
+        <span id="gameInformation"></span>
+        <br />
+        <span id="symbol"></span>
+        <div>
+
+            <div id="register">
+                <strong>Your Name:</strong>
+                <br />
+                <input type="text" class="input" id="gamaName" />
+                <br />
+                <input type="button" class="button" id="registerName" value="Play" />
+            </div>
+
+            <div id="waitingForOpponent">Looking for an opponent. Please wait! (HINT: Ask a friend to connect!)</div>
+
+            <div id="game">
+            </div>
+
+
+            <fieldset>
+                <legend>Debug Messages</legend>
+                <ul id="debug"></ul>
+            </fieldset>
+
+        </div>
+    </div>
+    <div id="serverInformation">
+        Number of connected players:  <span id="amountOfClients">0</span><br />
+        Number of live games: <span id="amountOfGames">0</span><br />
+        Total games finished: <span id="totalAmountOfGames">0</span><br /><br />
+        Made By: <span>Luljan Bacaj</span><br />
+    </div>
+</body>
+</html>
+
